@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Search</title>
+</head>
+<body>
+    <h2>Search for Buses</h2>
+    <label for="start">Start:</label>
+    <input type="text" id="start" placeholder="Enter start location">
+    <br>
+    <label for="end">End:</label>
+    <input type="text" id="end" placeholder="Enter end location">
+    <br>
+    <button onclick="searchBus()">Search</button>
+
+    <h3>Results:</h3>
+    <ul id="results"></ul>
+
+    <script>
+        async function searchBus() {
+            const start = document.getElementById("start").value;
+            const end = document.getElementById("end").value;
+
+            const response = await fetch(`http://localhost:3000/search?start=${start}&end=${end}`);
+            const data = await response.json();
+
+            const resultList = document.getElementById("results");
+            resultList.innerHTML = ""; // Clear previous results
+
+            if (data.message) {
+                resultList.innerHTML = `<li>${data.message}</li>`;
+            } else {
+                data.forEach(bus => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = `Bus: ${bus.busName}, Time: ${bus.time}`;
+                    resultList.appendChild(listItem);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
